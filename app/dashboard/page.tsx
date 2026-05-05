@@ -57,60 +57,77 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Header title="Gestion des Membres" />
+      <Header title="Interface de Gestion des Âmes" />
 
-      <main className="flex-1 p-6 space-y-6">
-        {/* Stats card */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center">
-              <Users size={22} className="text-brand-600" />
+      <main className="flex-1 p-4 sm:p-6 space-y-6">
+        
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          
+          {/* Total */}
+          <div className="bg-white rounded-xl border p-4 sm:p-5 flex items-center gap-4 shadow-sm">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-100 flex items-center justify-center">
+              <Users size={20} className="text-brand-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-brand-700">{members.length}</p>
-              <p className="text-sm text-gray-500">Membres total</p>
+              <p className="text-xl sm:text-2xl font-bold text-brand-700">
+                {members.length}
+              </p>
+              <p className="text-xs sm:text-sm text-gray-500">Membres total</p>
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <Users size={22} className="text-blue-600" />
+
+          {/* Hommes */}
+          <div className="bg-white rounded-xl border p-4 sm:p-5 flex items-center gap-4 shadow-sm">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center">
+              <Users size={20} className="text-blue-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-blue-700">
+              <p className="text-xl sm:text-2xl font-bold text-blue-700">
                 {members.filter((m) => m.genre === "Homme").length}
               </p>
-              <p className="text-sm text-gray-500">Hommes</p>
+              <p className="text-xs sm:text-sm text-gray-500">Hommes</p>
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm">
-            <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center">
-              <Users size={22} className="text-pink-600" />
+
+          {/* Femmes */}
+          <div className="bg-white rounded-xl border p-4 sm:p-5 flex items-center gap-4 shadow-sm">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-pink-100 flex items-center justify-center">
+              <Users size={20} className="text-pink-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-pink-700">
+              <p className="text-xl sm:text-2xl font-bold text-pink-700">
                 {members.filter((m) => m.genre === "Femme").length}
               </p>
-              <p className="text-sm text-gray-500">Femmes</p>
+              <p className="text-xs sm:text-sm text-gray-500">Femmes</p>
             </div>
           </div>
         </div>
 
-        {/* Table section */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-semibold text-gray-800">Liste des membres</h2>
-            <Button onClick={openAdd}>
+        {/* Table */}
+        <div className="bg-white rounded-xl border shadow-sm p-4 sm:p-6">
+          
+          {/* Header section */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">
+              Liste des membres
+            </h2>
+
+            <Button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2">
               <Plus size={16} />
-              Ajouter un membre
+              Ajouter
             </Button>
           </div>
 
-          <MembersTable
-            members={members}
-            loading={loading}
-            onEdit={openEdit}
-            onDelete={handleDelete}
-          />
+          {/* Table responsive */}
+          <div className="w-full overflow-x-auto">
+            <MembersTable
+              members={members}
+              loading={loading}
+              onEdit={openEdit}
+              onDelete={handleDelete}
+            />
+          </div>
         </div>
       </main>
 
