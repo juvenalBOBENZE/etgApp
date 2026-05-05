@@ -57,7 +57,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Header title="Interface de Gestion des Âmes" />
+      <Header title=" Gestion des Âmes" />
 
       <main className="flex-1 p-4 sm:p-6 space-y-6">
         
