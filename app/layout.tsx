@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
@@ -8,7 +8,20 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ETG — Gestion des Membres",
   description: "Application de gestion des membres de l'Église Terre de Grâce",
-  icons: { icon: "/logo.png" },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ETG",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1a3a8f",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
