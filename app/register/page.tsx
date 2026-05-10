@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { signIn } from "@/lib/firebase/firebaseAuth";
-import { getUserProfile } from "@/lib/firebase/users";
+import { registerVisiteur } from "@/lib/firebase/firebaseAuth";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import toast from "react-hot-toast";
@@ -13,13 +12,21 @@ import Image from "next/image";
 import Link from "next/link";
 
 const schema = z.object({
-  identifier: z.string().min(1, "Champ requis"),
+  nom: z.string().min(2, "Nom requis"),
+  telephone: z
+    .string()
+    .min(8, "Numéro invalide")
+    .regex(/^\+?\d+$/, "Format invalide (ex: +243812810541)"),
   password: z.string().min(6, "Mot de passe requis (6 caractères min)"),
+  confirmPassword: z.string().min(6, "Confirmez le mot de passe"),
+}).refine((d) => d.password === d.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
 });
 
-type LoginForm = z.infer<typeof schema>;
+type RegisterForm = z.infer<typeof schema>;
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState("");
 
@@ -27,21 +34,20 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({ resolver: zodResolver(schema) });
+  } = useForm<RegisterForm>({ resolver: zodResolver(schema) });
 
-  async function onSubmit(data: LoginForm) {
+  async function onSubmit(data: RegisterForm) {
     setError("");
     try {
-      const user = await signIn(data.identifier, data.password);
-      const profile = await getUserProfile(user.uid);
-      toast.success("Connexion réussie");
-      if (!profile || profile.role === "admin") {
-        router.push("/dashboard");
+      await registerVisiteur(data.nom, data.telephone, data.password);
+      toast.success("Compte créé avec succès");
+      router.push("/visiteur");
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "code" in err && err.code === "auth/email-already-in-use") {
+        setError("Ce numéro est déjà enregistré");
       } else {
-        router.push("/visiteur");
+        setError("Erreur lors de la création du compte");
       }
-    } catch {
-      setError("Identifiant ou mot de passe incorrect");
     }
   }
 
@@ -55,20 +61,30 @@ export default function LoginPage() {
           <div className="text-center">
             <p className="text-xs text-gray-400 uppercase tracking-widest">Église</p>
             <h1 className="text-xl font-bold text-brand-700">Terre de Grâce</h1>
-            <p className="text-sm text-gray-500 mt-1">Gestion des membres</p>
+            <p className="text-sm text-gray-500 mt-1">Créer un compte membre</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <Input
-            id="identifier"
+            id="nom"
             type="text"
-            label="Téléphone ou Email"
-            placeholder="0821234567"
-            error={errors.identifier?.message}
+            label="Nom complet"
+            placeholder="Jean Dupont"
+            error={errors.nom?.message}
             required
-            autoComplete="username"
-            {...register("identifier")}
+            autoComplete="name"
+            {...register("nom")}
+          />
+          <Input
+            id="telephone"
+            type="tel"
+            label="Numéro de téléphone"
+            placeholder="0821234567"
+            error={errors.telephone?.message}
+            required
+            autoComplete="tel"
+            {...register("telephone")}
           />
           <Input
             id="password"
@@ -77,8 +93,18 @@ export default function LoginPage() {
             placeholder="••••••••"
             error={errors.password?.message}
             required
-            autoComplete="current-password"
+            autoComplete="new-password"
             {...register("password")}
+          />
+          <Input
+            id="confirmPassword"
+            type="password"
+            label="Confirmer le mot de passe"
+            placeholder="••••••••"
+            error={errors.confirmPassword?.message}
+            required
+            autoComplete="new-password"
+            {...register("confirmPassword")}
           />
 
           {error && (
@@ -86,14 +112,14 @@ export default function LoginPage() {
           )}
 
           <Button type="submit" size="lg" disabled={isSubmitting} className="w-full mt-1">
-            {isSubmitting ? "Connexion..." : "Se connecter"}
+            {isSubmitting ? "Création..." : "Créer mon compte"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-gray-500">
-          Pas encore de compte ?{" "}
-          <Link href="/register" className="text-brand-600 font-medium hover:underline">
-            S&apos;inscrire
+          Déjà un compte ?{" "}
+          <Link href="/login" className="text-brand-600 font-medium hover:underline">
+            Se connecter
           </Link>
         </p>
       </div>

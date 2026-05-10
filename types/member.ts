@@ -18,6 +18,7 @@ export interface Member {
   quartier: string;
   commune: string;
   commentaire?: string;
+  addedBy?: string;
   createdAt: string;
   updatedAt: string;
 }

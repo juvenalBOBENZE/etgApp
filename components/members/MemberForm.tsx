@@ -54,7 +54,7 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
         <Input
           id="nom"
           label="Nom"
-          placeholder="KABILA"
+          placeholder="BOBENZE"
           error={errors.nom?.message}
           required
           {...register("nom")}
@@ -62,9 +62,9 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
         <Input
           id="postNom"
           label="Post-nom"
-          placeholder="MULAMBA"
+          placeholder="Juvenal"
           error={errors.postNom?.message}
-          required
+        
           {...register("postNom")}
         />
         <Input
@@ -113,7 +113,7 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Avenue"
           placeholder="Avenue de la Paix"
           error={errors.avenue?.message}
-          required
+          
           {...register("avenue")}
         />
         <Input
@@ -121,7 +121,7 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Quartier"
           placeholder="Quartier Résidentiel"
           error={errors.quartier?.message}
-          required
+          
           {...register("quartier")}
         />
         <Input

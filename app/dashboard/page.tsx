@@ -4,6 +4,8 @@ import { Plus, Users } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { MembersTable } from "@/components/members/MembersTable";
 import { MemberDialog } from "@/components/members/MemberDialog";
+import { TopVisiteurs } from "@/components/dashboard/TopVisiteurs";
+import { ExcelActions } from "@/components/dashboard/ExcelActions";
 import { Button } from "@/components/ui/Button";
 import { useMembers } from "@/hooks/useMembers";
 import type { Member } from "@/types/member";
@@ -11,7 +13,7 @@ import type { MemberFormValues } from "@/lib/validations/member";
 import toast from "react-hot-toast";
 
 export default function DashboardPage() {
-  const { members, loading, add, update, remove } = useMembers();
+  const { members, loading, add, update, remove, refresh } = useMembers();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selected, setSelected] = useState<Member | undefined>();
 
@@ -104,19 +106,24 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Top membres */}
+        <TopVisiteurs />
+
         {/* Table */}
         <div className="bg-white rounded-xl border shadow-sm p-4 sm:p-6">
           
           {/* Header section */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-              Liste des membres
-            </h2>
-
-            <Button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2">
-              <Plus size={16} />
-              Ajouter
-            </Button>
+          <div className="flex flex-col gap-3 mb-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-800">
+                Liste des membres
+              </h2>
+              <Button onClick={openAdd} className="w-full sm:w-auto flex items-center justify-center gap-2">
+                <Plus size={16} />
+                Ajouter
+              </Button>
+            </div>
+            <ExcelActions members={members} onImportDone={refresh} />
           </div>
 
           {/* Table responsive */}

@@ -2,16 +2,28 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import type { UserRole } from "@/lib/firebase/users";
 
-export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+interface AuthGuardProps {
+  children: React.ReactNode;
+  requiredRole?: UserRole;
+}
+
+export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
+  const { user, role, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (loading) return;
+    if (!user) {
       router.replace("/login");
+      return;
     }
-  }, [user, loading, router]);
+    // role===null means legacy admin account with no Firestore profile → allow admin routes
+    if (requiredRole && role !== null && role !== requiredRole) {
+      router.replace(role === "admin" ? "/dashboard" : "/visiteur");
+    }
+  }, [user, role, loading, router, requiredRole]);
 
   if (loading) {
     return (
@@ -25,6 +37,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) return null;
+  if (requiredRole && role !== null && role !== requiredRole) return null;
 
   return <>{children}</>;
 }
