@@ -40,8 +40,8 @@ export default function DashboardPage() {
         await add(data);
       }
       handleClose();
-    } catch {
-      toast.error("Une erreur est survenue");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Une erreur est survenue");
     }
   }
 

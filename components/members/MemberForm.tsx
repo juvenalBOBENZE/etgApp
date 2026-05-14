@@ -35,14 +35,14 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
     defaultValues: defaultValues
       ? {
           nom: defaultValues.nom,
-          postNom: defaultValues.postNom,
-          prenom: defaultValues.prenom,
+          postNom: defaultValues.postNom ?? "",
+          prenom: defaultValues.prenom ?? "",
           genre: defaultValues.genre,
           situationMatrimoniale: defaultValues.situationMatrimoniale,
           telephone: defaultValues.telephone,
-          avenue: defaultValues.avenue,
-          quartier: defaultValues.quartier,
-          commune: defaultValues.commune,
+          avenue: defaultValues.avenue ?? "",
+          quartier: defaultValues.quartier ?? "",
+          commune: defaultValues.commune ?? "",
           commentaire: defaultValues.commentaire ?? "",
         }
       : undefined,
@@ -64,7 +64,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Post-nom"
           placeholder="Juvenal"
           error={errors.postNom?.message}
-        
           {...register("postNom")}
         />
         <Input
@@ -72,7 +71,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Prénom"
           placeholder="Joseph"
           error={errors.prenom?.message}
-          required
           {...register("prenom")}
         />
       </div>
@@ -84,7 +82,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           options={GENRES}
           placeholder="Sélectionner..."
           error={errors.genre?.message}
-          required
           {...register("genre")}
         />
         <Select
@@ -93,7 +90,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           options={SITUATIONS}
           placeholder="Sélectionner..."
           error={errors.situationMatrimoniale?.message}
-          required
           {...register("situationMatrimoniale")}
         />
       </div>
@@ -113,7 +109,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Avenue"
           placeholder="Avenue de la Paix"
           error={errors.avenue?.message}
-          
           {...register("avenue")}
         />
         <Input
@@ -121,7 +116,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Quartier"
           placeholder="Quartier Résidentiel"
           error={errors.quartier?.message}
-          
           {...register("quartier")}
         />
         <Input
@@ -129,7 +123,6 @@ export function MemberForm({ defaultValues, onSubmit, onCancel }: MemberFormProp
           label="Commune"
           placeholder="Gombe"
           error={errors.commune?.message}
-          required
           {...register("commune")}
         />
       </div>

@@ -1,22 +1,25 @@
 import { z } from "zod";
 
 export const memberSchema = z.object({
-  nom: z.string().min(1, "Nom requis").max(50),
-  postNom: z.string().min(1, "Post-nom requis").max(50),
-  prenom: z.string().min(1, "Prénom requis").max(50),
-  genre: z.enum(["Homme", "Femme"], { required_error: "Genre requis" }),
-  situationMatrimoniale: z.enum(
-    ["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf/Veuve"],
-    { required_error: "Situation matrimoniale requise" }
+  nom: z.string().min(1, "Nom requis").max(100),
+  postNom: z.string().max(50).optional(),
+  prenom: z.string().max(50).optional(),
+  genre: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.enum(["Homme", "Femme"]).optional()
+  ),
+  situationMatrimoniale: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.enum(["Célibataire", "Marié(e)", "Divorcé(e)", "Veuf/Veuve"]).optional()
   ),
   telephone: z
     .string()
     .min(9, "Téléphone invalide")
     .max(15)
     .regex(/^[0-9+\s\-()]+$/, "Format téléphone invalide"),
-  avenue: z.string().min(1, "Avenue requise").max(100),
-  quartier: z.string().min(1, "Quartier requis").max(100),
-  commune: z.string().min(1, "Commune requise").max(100),
+  avenue: z.string().max(100).optional(),
+  quartier: z.string().max(100).optional(),
+  commune: z.string().max(100).optional(),
   commentaire: z.string().max(500).optional().or(z.literal("")),
 });
 

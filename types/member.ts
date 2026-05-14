@@ -9,14 +9,14 @@ export type SituationMatrimoniale =
 export interface Member {
   id: string;
   nom: string;
-  postNom: string;
-  prenom: string;
-  genre: Genre;
-  situationMatrimoniale: SituationMatrimoniale;
+  postNom?: string;
+  prenom?: string;
+  genre?: Genre;
+  situationMatrimoniale?: SituationMatrimoniale;
   telephone: string;
-  avenue: string;
-  quartier: string;
-  commune: string;
+  avenue?: string;
+  quartier?: string;
+  commune?: string;
   commentaire?: string;
   addedBy?: string;
   createdAt: string;

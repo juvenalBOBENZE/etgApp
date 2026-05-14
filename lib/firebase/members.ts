@@ -23,19 +23,29 @@ function toMember(id: string, data: Record<string, unknown>): Member {
   return {
     id,
     nom: String(data.nom ?? ""),
-    postNom: String(data.postNom ?? ""),
-    prenom: String(data.prenom ?? ""),
-    genre: data.genre as Member["genre"],
-    situationMatrimoniale: data.situationMatrimoniale as Member["situationMatrimoniale"],
+    postNom: data.postNom ? String(data.postNom) : undefined,
+    prenom: data.prenom ? String(data.prenom) : undefined,
+    genre: data.genre ? (data.genre as Member["genre"]) : undefined,
+    situationMatrimoniale: data.situationMatrimoniale
+      ? (data.situationMatrimoniale as Member["situationMatrimoniale"])
+      : undefined,
     telephone: String(data.telephone ?? ""),
-    avenue: String(data.avenue ?? ""),
-    quartier: String(data.quartier ?? ""),
-    commune: String(data.commune ?? ""),
+    avenue: data.avenue ? String(data.avenue) : undefined,
+    quartier: data.quartier ? String(data.quartier) : undefined,
+    commune: data.commune ? String(data.commune) : undefined,
     commentaire: data.commentaire ? String(data.commentaire) : undefined,
     addedBy: data.addedBy ? String(data.addedBy) : undefined,
     createdAt: toISO(data.createdAt),
     updatedAt: toISO(data.updatedAt),
   };
+}
+
+async function phoneExists(telephone: string, excludeId?: string): Promise<boolean> {
+  const q = query(collection(db, COL), where("telephone", "==", telephone));
+  const snap = await getDocs(q);
+  if (snap.empty) return false;
+  if (excludeId) return snap.docs.some((d) => d.id !== excludeId);
+  return true;
 }
 
 export async function getMembers(): Promise<Member[]> {
@@ -45,6 +55,9 @@ export async function getMembers(): Promise<Member[]> {
 }
 
 export async function addMember(input: MemberInput, addedBy?: string): Promise<string> {
+  if (await phoneExists(input.telephone)) {
+    throw new Error("Ce numéro de téléphone est déjà enregistré");
+  }
   const ref = await addDoc(collection(db, COL), {
     ...input,
     ...(addedBy ? { addedBy } : {}),
@@ -55,6 +68,9 @@ export async function addMember(input: MemberInput, addedBy?: string): Promise<s
 }
 
 export async function updateMember(id: string, input: MemberInput): Promise<void> {
+  if (await phoneExists(input.telephone, id)) {
+    throw new Error("Ce numéro de téléphone est déjà enregistré");
+  }
   await updateDoc(doc(db, COL, id), {
     ...input,
     updatedAt: serverTimestamp(),
@@ -91,7 +107,6 @@ function getWeekBounds(): { start: Date; end: Date } {
 
 export async function getTopVisiteursThisWeek(): Promise<TopVisiteur[]> {
   const { start, end } = getWeekBounds();
-  // Single inequality field only → filter addedBy client-side
   const q = query(
     collection(db, COL),
     where("createdAt", ">=", Timestamp.fromDate(start)),
@@ -123,7 +138,6 @@ export async function getTopVisiteursThisWeek(): Promise<TopVisiteur[]> {
 }
 
 export async function getMemberStatsByUser(uid: string): Promise<{ total: number; byDay: DayStat[] }> {
-  // No orderBy → no composite index needed, sort dates client-side
   const q = query(collection(db, COL), where("addedBy", "==", uid));
   const snap = await getDocs(q);
   const dayMap = new Map<string, { label: string; ts: number; count: number }>();
