@@ -19,14 +19,14 @@ const HEADERS: Record<string, keyof MemberFormValues | "createdAt"> = {
 export function exportMembersToExcel(members: Member[]): void {
   const rows = members.map((m) => ({
     "Nom": m.nom,
-    "Post-nom": m.postNom,
-    "Prénom": m.prenom,
-    "Genre": m.genre,
-    "Situation Matrimoniale": m.situationMatrimoniale,
+    "Post-nom": m.postNom ?? "",
+    "Prénom": m.prenom ?? "",
+    "Genre": m.genre ?? "",
+    "Situation Matrimoniale": m.situationMatrimoniale ?? "",
     "Téléphone": m.telephone,
-    "Avenue": m.avenue,
-    "Quartier": m.quartier,
-    "Commune": m.commune,
+    "Avenue": m.avenue ?? "",
+    "Quartier": m.quartier ?? "",
+    "Commune": m.commune ?? "",
     "Commentaire": m.commentaire ?? "",
     "Date d'ajout": m.createdAt ? new Date(m.createdAt).toLocaleDateString("fr-FR") : "",
   }));

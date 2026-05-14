@@ -21,8 +21,8 @@ export function MembersTable({ members, loading, onEdit, onDelete }: MembersTabl
     const q = search.toLowerCase();
     return (
       m.nom.toLowerCase().includes(q) ||
-      m.postNom.toLowerCase().includes(q) ||
-      m.prenom.toLowerCase().includes(q) ||
+      m.postNom?.toLowerCase().includes(q) ||
+      m.prenom?.toLowerCase().includes(q) ||
       m.telephone.includes(q)
     );
   });

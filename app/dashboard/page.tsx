@@ -46,9 +46,8 @@ export default function DashboardPage() {
   }
 
   async function handleDelete(member: Member) {
-    const confirmed = window.confirm(
-      `Supprimer ${member.nom} ${member.postNom} ${member.prenom} ?`
-    );
+    const name = [member.nom, member.postNom, member.prenom].filter(Boolean).join(" ");
+    const confirmed = window.confirm(`Supprimer ${name} ?`);
     if (!confirmed) return;
     try {
       await remove(member.id);
